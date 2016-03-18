@@ -11,7 +11,7 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var session = require('express-session');
 var flash = require('connect-flash');
-var localStrategy = require('passport-local').Strategy;
+var LocalStrategy = require('passport-local').Strategy;
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -48,7 +48,19 @@ app.use(passport.session());
 // use the Account model we built
 var Account = require('./models/account');
 passport.use(Account.createStrategy());
-passport.use(new localStrategy(Account.authenticate()));
+passport.use(new LocalStrategy(Account.authenticate()));
+
+
+/* passport.use(new LocalStrategy(
+    function(username, password, done) {
+      Account.findOne({ username: username }, function (err, user) {
+        if (err) { return done(err); }
+        if (!user) { return done(null, false); }
+        if (!user.verifyPassword(password)) { return done(null, false); }
+        return done(null, user);
+      });
+    }
+)); */
 
 // methods for accessing the session data
 passport.serializeUser(Account.serializeUser());

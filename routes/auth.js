@@ -18,6 +18,7 @@ passport.deserializeUser(function(id, done) {
     });
 });
 
+
 // github auth config
 passport.use(new gitHub({
     clientID: configDb.githubClientId,
@@ -72,8 +73,9 @@ router.get('/login', function(req, res, next) {
 });
 
 // POST login - validate user
-router.post('/login', passport.authenticate('local', {
-    successRedirect: '/articles',
+
+ router.post('/login', passport.authenticate('local', {
+    successRedirect: '/',
     failureRedirect: '/auth/login',
     failureMessage: 'Invalid Login'
     //failureFlash: true
@@ -96,9 +98,10 @@ router.post('/register', function(req, res, next) {
            return res.render('auth/register', { title: 'Register' });
         }
         else {
-            req.login(account, function(err) {
+            /*req.login(account, function(err) {
                 res.redirect('/articles');
-            });
+            });*/
+            res.redirect('/auth/login');
         }
     });
 });
