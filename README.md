@@ -1,21 +1,6 @@
-# comp2106-lesson8
-Enabling Passport Local and GitHub for Authentication
+# comp2106-lesson9
+Enabling Passport Local and GitHub for Authentication - Updated After Lesson 10
 
-Note the change in routes/articles.js - instead of calling isLoggedIn function (which does not work) we are checking if the req.isAuthenticated right in the GET handler
+In articles/isLoggedIn() function, return next; replaced with return next(); . All articles pages are now secured.
 
-router.get('/add', function(req, res, next) {
-
-    // new
-    if (req.isAuthenticated()) {
-        res.render('articles/add', {
-            title: 'Add a New Article'
-        });
-    }
-    else {
-        res.redirect('/auth/login');
-    }
-/* old
-    res.render('articles/add', {
-        title: 'Add a New Article'
-    });*/
-});
+Welcome page has been added, as has Logout functionality.  Logged in users no longer see the Login form but are redirected to the welcome page instead.
