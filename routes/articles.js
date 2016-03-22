@@ -6,7 +6,7 @@ var Article = require('../models/article');
 var passport = require('passport');
 
 // set up the GET handler for the main articles page
-router.get('/', function(req, res, next) {
+router.get('/', isLoggedIn, function(req, res, next) {
     // use the Article model to retrieve all articles
     Article.find(function (err, articles) {
         // if we have an error
@@ -27,20 +27,11 @@ router.get('/', function(req, res, next) {
 });
 
 // GET handler for add to display a blank form
-router.get('/add', function(req, res, next) {
+router.get('/add', isLoggedIn, function(req, res, next) {
 
-    if (req.isAuthenticated()) {
-        res.render('articles/add', {
-            title: 'Add a New Article'
-        });
-    }
-    else {
-        res.redirect('/auth/login');
-    }
-/*
     res.render('articles/add', {
         title: 'Add a New Article'
-    });*/
+    });
 });
 
 // POST handler for add to process the form
@@ -126,12 +117,11 @@ function isLoggedIn(req, res, next) {
 
     // is the user authenticated?
     if (req.isAuthenticated()) {
-        return next;
+        return next();
     }
     else {
         res.redirect('/auth/login');
     }
-
 }
 
 // make public

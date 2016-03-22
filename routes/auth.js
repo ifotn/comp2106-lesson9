@@ -64,18 +64,25 @@ router.get('/login', function(req, res, next) {
     // clear the session messages
     req.session.messages = [];
 
-    // show the login page and pass in any messages we may have
-    res.render('auth/login', {
-        title: 'Login',
-        user: req.user,
-        messages: messages
-    });
+    // check if user is already logged in
+    if (req.isAuthenticated()) {
+        res.redirect('/auth/welcome');
+    }
+    else {
+        // show the login page and pass in any messages we may have
+        res.render('auth/login', {
+            title: 'Login',
+            user: req.user,
+            messages: messages
+        });
+    }
+
 });
 
 // POST login - validate user
 
  router.post('/login', passport.authenticate('local', {
-    successRedirect: '/',
+    successRedirect: '/auth/welcome',
     failureRedirect: '/auth/login',
     failureMessage: 'Invalid Login'
     //failureFlash: true
@@ -85,6 +92,14 @@ router.get('/login', function(req, res, next) {
 router.get('/register', function(req, res, next) {
    res.render('auth/register', {
     title: 'Register'
+   });
+});
+
+// GET welcome - show welome page for authenticated users
+router.get('/welcome', isLoggedIn, function(req, res, next) {
+   res.render('auth/welcome', {
+       title: 'Welcome',
+       user: req.user
    });
 });
 
@@ -106,7 +121,25 @@ router.post('/register', function(req, res, next) {
     });
 });
 
+// GET logout
+router.get('/logout', function(req, res, next) {
+    // we can use either of these
+    //req.session.destroy();
+    req.logout();
+    res.redirect('/');
+});
 
+// auth check
+function isLoggedIn(req, res, next) {
+
+    // is the user authenticated?
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    else {
+        res.redirect('/auth/login');
+    }
+}
 
 // make this public
 module.exports = router, passport;
